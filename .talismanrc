@@ -1,0 +1,6 @@
+fileignoreconfig:
+- filename: src/react-app-env.d.ts
+  checksum: f0045b3f8905880e17671222a920193a34a64f59b0d5fe52d8829b8da70e50dd
+- filename: package-lock.json
+  checksum: 76b7d7c04df3c589073ef82a47871c17f153ee86bb785eb81f4a7c43cc357898
+version: ""
