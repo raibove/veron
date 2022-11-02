@@ -8,7 +8,9 @@ const Header = () => {
         Veron
       </h1>
       <div className="mr-4 flex gap-x-4">
-        <img src={User} alt="user" className="cursor-pointer" />
+        <div>
+          <img src={User} alt="user" className="cursor-pointer" />
+        </div>
         <img src={Cart} alt="cart" className="cursor-pointer" />
       </div>
     </div>
