@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 interface AuthResponse {
   token: string;
-  user: User;
+  user: Users;
 }
 
-interface User {
+interface Users {
   _id: string;
   name: string;
   email: string;
@@ -18,7 +18,13 @@ interface User {
 }
 
 const Header = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Users | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem("isLoggedIn") !== undefined &&
+      localStorage.getItem("isLoggedIn") === "true"
+      ? "true"
+      : "false";
+  });
 
   const navigate = useNavigate();
 
@@ -30,6 +36,9 @@ const Header = () => {
       });
 
       setUser(result.data.user);
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("veronToken", result.data.token);
+      setIsLoggedIn("true");
     } catch (e) {
       console.log(e);
     }
@@ -53,16 +62,28 @@ const Header = () => {
           className="cursor-pointer"
           onClick={() => navigate("/cart")}
         />
-        <GoogleOAuthProvider
-          clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
-        >
-          <GoogleLogin
-            onSuccess={handleLogin}
-            onError={() => {
-              console.log("failed");
+        {isLoggedIn === "false" ? (
+          <GoogleOAuthProvider
+            clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
+          >
+            <GoogleLogin
+              onSuccess={handleLogin}
+              onError={() => {
+                console.log("failed");
+              }}
+            />
+          </GoogleOAuthProvider>
+        ) : (
+          <button
+            onClick={() => {
+              localStorage.removeItem("isLoggedIn");
+              setIsLoggedIn("false");
+              navigate("/");
             }}
-          />
-        </GoogleOAuthProvider>
+          >
+            Logout
+          </button>
+        )}
       </div>
     </div>
   );

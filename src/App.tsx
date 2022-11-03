@@ -1,7 +1,17 @@
-import Header from "./components/Header";
 import Landing from "./components/Landing";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
 import Cart from "./components/Cart";
+
+function PrivateOutlet() {
+  const auth = localStorage.getItem("isLoggedIn") === "true";
+  return auth ? <Outlet /> : <Navigate to="/" />;
+}
 
 const App = () => {
   return (
@@ -9,17 +19,11 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/cart" element={<Cart />} />
-          {/*<Route path="teams" element={<Teams />}>
-              <Route path=":teamId" element={<Team />} />
-              <Route path="new" element={<NewTeamForm />} />
-              <Route index element={<LeagueStandings />} />
-            </Route> */}
+          <Route path="/cart" element={<PrivateOutlet />}>
+            <Route path="" element={<Cart />} />
+          </Route>
         </Routes>
       </BrowserRouter>
-      {/* <div className="bg-[#F4FFFE] h-screen">
-        <Header />
-        <Landing /> */}
     </div>
   );
 };
