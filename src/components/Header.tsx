@@ -4,6 +4,8 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface AuthResponse {
   token: string;
@@ -16,6 +18,19 @@ interface Users {
   email: string;
   avatar: string;
 }
+
+const notifyError = () => {
+  toast.error("Login to proceed!", {
+    position: "top-right",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+};
 
 const Header = () => {
   const [user, setUser] = useState<Users | null>(null);
@@ -52,16 +67,10 @@ const Header = () => {
       >
         Veron
       </h1>
-      <div className="mr-4 flex gap-x-4">
-        <div>
+      <div className="mr-4 flex gap-x-4 md:mr-16 md:gap-x-10">
+        {/* <div>
           <img src={User} alt="user" className="cursor-pointer" />
-        </div>
-        <img
-          src={Cart}
-          alt="cart"
-          className="cursor-pointer"
-          onClick={() => navigate("/cart")}
-        />
+        </div> */}
         {isLoggedIn === "false" ? (
           <GoogleOAuthProvider
             clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
@@ -84,6 +93,16 @@ const Header = () => {
             Logout
           </button>
         )}
+        <img
+          src={Cart}
+          alt="cart"
+          className="cursor-pointer"
+          onClick={() => {
+            localStorage.getItem("isLoggedIn") === "true"
+              ? navigate("/cart")
+              : notifyError();
+          }}
+        />
       </div>
     </div>
   );

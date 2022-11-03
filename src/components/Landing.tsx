@@ -2,7 +2,9 @@ import Product from "./Product";
 import LandingImage from "../assets/landing.png";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
 import Header from "./Header";
+
 const Landing = () => {
   const [electronics, setElectronics] = useState(null);
   const [jewelery, setJewelery] = useState(null);
@@ -88,6 +90,7 @@ const Landing = () => {
           <Product title="Electronics" data={electronics} />
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
