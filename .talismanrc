@@ -1,9 +1,8 @@
 fileignoreconfig:
-- filename: src/react-app-env.d.ts
-  checksum: f0045b3f8905880e17671222a920193a34a64f59b0d5fe52d8829b8da70e50dd
-- filename: package-lock.json
-  checksum: d2d9427bcaf89ea2d3ddcdd41e0729b5f8bfcb5bc87d5270bec6e0e84f5d2657
-- filename: src/components/Product.tsx
-  checksum: d417c814efed184cd883a29947b7f4d6a1298d1e575f7da3b7fa1ca3d59b009b
-version: ""
+  - filename: src/react-app-env.d.ts
+    checksum: f0045b3f8905880e17671222a920193a34a64f59b0d5fe52d8829b8da70e50dd
+  - filename: package-lock.json
+    checksum: ddcf4d0515ca649ae98195dc0a51e3de1ce80724b92055400b285a4c85eb01a7
+  - filename: src/components/Product.tsx
+    checksum: d417c814efed184cd883a29947b7f4d6a1298d1e575f7da3b7fa1ca3d59b009b
 version: ""
