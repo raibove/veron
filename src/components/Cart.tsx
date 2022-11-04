@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { notifyError, notifySuccess } from "./ToastifyMessages";
 import { ReactComponent as TreeSvg } from "../assets/tree.svg";
+import { getAverageIntensity, getCurrentIntensity } from "./helper";
 
 interface ProductDetail {
   _id: string;
@@ -14,20 +15,65 @@ interface ProductDetail {
   quantity: number;
   createdAt: number;
   productImage: string;
+  updateDate: Date[];
 }
 
 const Cart = () => {
   const navigate = useNavigate();
   const [cartData, setCartData] = useState<ProductDetail[] | null>(null);
 
+  const calculatePoints = async () => {
+    const currentTime = new Date();
+    const hourBefore = new Date(new Date().getTime() - 1 * 60 * 60 * 1000);
+    let cnt = 0;
+    let currCnt = 0;
+    cartData?.forEach((data) => {
+      currCnt = 0;
+      data.updateDate.forEach((time) => {
+        if (time <= currentTime && time >= hourBefore) {
+          currCnt += 100;
+        }
+      });
+      cnt += currCnt;
+    });
+    console.log(cnt);
+    try {
+      await axios.post(
+        "/rewards",
+        { points: cnt },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("veronToken")}`,
+          },
+        }
+      );
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        if (err.response.status === 403) {
+          localStorage.clear();
+          notifyError(err.response.data);
+        }
+      } else notifyError("Could not get Cart!!");
+    }
+  };
   const checkoutUser = async () => {
     try {
+      const currIntensity = await getCurrentIntensity();
+      const avgIntensity = await getAverageIntensity();
+
+      if (currIntensity <= avgIntensity && cartData != null) {
+        await calculatePoints();
+      }
+
       const response = await axios.get("/cart/checkout", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("veronToken")}`,
         },
+        params: {
+          currentIntensity: currIntensity,
+          averageIntensity: avgIntensity,
+        },
       });
-      console.log(response);
       if (response.data.length === 0) setCartData(null);
       notifySuccess("Checked out succesfully");
     } catch (err) {
@@ -124,7 +170,7 @@ const Cart = () => {
                   </div>
                   <div className="flex justify-center w-1/5">
                     <TreeSvg className="h-8 w-8" />{" "}
-                    <span className="text-lg font-semibold"> &nbsp; 100</span>
+                    <span className="text-lg font-semibold"> &nbsp; </span>
                   </div>
                 </div>
               ))}
