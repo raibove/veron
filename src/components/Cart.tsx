@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { notifyError, notifySuccess } from "./ToastifyMessages";
+import { ReactComponent as TreeSvg } from "../assets/tree.svg";
 
 interface ProductDetail {
   _id: string;
@@ -78,6 +79,9 @@ const Cart = () => {
             <h3 className="font-semibold  text-gray-600 text-sm md:text-lg uppercase w-1/5 text-center">
               Total
             </h3>
+            <h3 className="font-semibold  text-gray-600 text-sm md:text-lg uppercase w-1/5 text-center">
+              Reward
+            </h3>
           </div>
           {cartData !== null && (
             <>
@@ -117,6 +121,10 @@ const Cart = () => {
                     <span className="p-2 border-slate-400 font-semibold text-sm md:text-lg">
                       ${getTotalProductPrice(product.quantity, product.price)}
                     </span>
+                  </div>
+                  <div className="flex justify-center w-1/5">
+                    <TreeSvg className="h-8 w-8" />{" "}
+                    <span className="text-lg font-semibold"> &nbsp; 100</span>
                   </div>
                 </div>
               ))}

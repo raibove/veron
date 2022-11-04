@@ -1,4 +1,5 @@
 import Cart from "../assets/cart.svg";
+import Reward from "../assets/reward.svg";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -74,6 +75,16 @@ const Header = () => {
             Logout
           </button>
         )}
+        <img
+          src={Reward}
+          alt="gift"
+          className="cursor-pointer"
+          onClick={() => {
+            localStorage.getItem("isLoggedIn") === "true"
+              ? navigate("/rewards")
+              : notifyError("Login to proceed!");
+          }}
+        />
         <img
           src={Cart}
           alt="cart"

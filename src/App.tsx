@@ -7,6 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Cart from "./components/Cart";
+import Rewards from "./components/Rewards";
 
 function PrivateOutlet() {
   const auth = localStorage.getItem("isLoggedIn") === "true";
@@ -21,6 +22,9 @@ const App = () => {
           <Route path="/" element={<Landing />} />
           <Route path="/cart" element={<PrivateOutlet />}>
             <Route path="" element={<Cart />} />
+          </Route>
+          <Route path="/rewards" element={<PrivateOutlet />}>
+            <Route path="" element={<Rewards />} />
           </Route>
         </Routes>
       </BrowserRouter>
