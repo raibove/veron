@@ -21,22 +21,33 @@ interface ProductDetail {
 const Cart = () => {
   const navigate = useNavigate();
   const [cartData, setCartData] = useState<ProductDetail[] | null>(null);
+  const [currentIntensity, setCurrentIntensity] = useState(0);
+  const [averageIntensity, setAverageIntensity] = useState(0);
+
+  const getIntensityUpdate = async () => {
+    const tempCurrentIntensity = await getCurrentIntensity();
+    const tempAvgIntensity = await getAverageIntensity();
+    setCurrentIntensity(tempCurrentIntensity);
+    setAverageIntensity(tempAvgIntensity);
+  };
 
   const calculatePoints = async () => {
-    const currentTime = new Date();
-    const hourBefore = new Date(new Date().getTime() - 1 * 60 * 60 * 1000);
+    const currentTime = new Date().getTime();
+    const hourBefore = new Date(
+      new Date().getTime() - 1 * 60 * 60 * 1000
+    ).getTime();
     let cnt = 0;
     let currCnt = 0;
     cartData?.forEach((data) => {
       currCnt = 0;
       data.updateDate.forEach((time) => {
-        if (time <= currentTime && time >= hourBefore) {
+        let productTime = new Date(time).getTime();
+        if (productTime <= currentTime && productTime >= hourBefore) {
           currCnt += 100;
         }
       });
       cnt += currCnt;
     });
-    console.log(cnt);
     try {
       await axios.post(
         "/rewards",
@@ -60,8 +71,7 @@ const Cart = () => {
     try {
       const currIntensity = await getCurrentIntensity();
       const avgIntensity = await getAverageIntensity();
-
-      if (currIntensity <= avgIntensity && cartData != null) {
+      if (currIntensity <= avgIntensity) {
         await calculatePoints();
       }
 
@@ -101,10 +111,30 @@ const Cart = () => {
 
   useEffect(() => {
     getCart();
+    getIntensityUpdate();
   }, []);
 
   const getTotalProductPrice = (price: number, quantity: number) => {
     return price * quantity;
+  };
+
+  const getMinuteDifference = (startDate: Date, endDate: Date) => {
+    const msInMinute = 60 * 1000;
+    return Math.round(
+      Math.abs(endDate.getTime() - startDate.getTime()) / msInMinute
+    );
+  };
+
+  const getReward = (product: ProductDetail) => {
+    if (currentIntensity > averageIntensity) return 0;
+    let intensity = 0;
+    let currTime = new Date();
+
+    product.updateDate.forEach((time) => {
+      if (getMinuteDifference(new Date(time), currTime) < 30000)
+        intensity += 100;
+    });
+    return intensity;
   };
 
   return (
@@ -169,8 +199,10 @@ const Cart = () => {
                     </span>
                   </div>
                   <div className="flex justify-center w-1/5">
-                    <TreeSvg className="h-8 w-8" />{" "}
-                    <span className="text-lg font-semibold"> &nbsp; </span>
+                    <TreeSvg className="h-8 w-8" />
+                    <span className="text-lg font-semibold">
+                      {getReward(product)}
+                    </span>
                   </div>
                 </div>
               ))}

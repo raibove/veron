@@ -5,12 +5,14 @@ import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import Header from "./Header";
 import "react-toastify/dist/ReactToastify.css";
+import { getAverageIntensity, getCurrentIntensity } from "./helper";
 
 const Landing = () => {
   const [electronics, setElectronics] = useState(null);
   const [jewelery, setJewelery] = useState(null);
   const [menClothing, setMenClothing] = useState(null);
   const [womenClothing, setWomenClothing] = useState(null);
+  const [isClean, setIsClean] = useState(false);
 
   const getElectronics = async () => {
     try {
@@ -61,12 +63,31 @@ const Landing = () => {
     getJewelery();
     getMenClothing();
     getWomenClothing();
+    getIsClean();
   }, []);
+
+  const getIsClean = async () => {
+    const currentIntensity = await getCurrentIntensity();
+    const avgIntensity = await getAverageIntensity();
+    if (avgIntensity < currentIntensity) setIsClean(false);
+    else setIsClean(true);
+  };
 
   return (
     <div>
       <Header />
-      <div className="relative mt-8">
+      <div className="my-2">
+        {isClean === true ? (
+          <h4 className="font-semibold float-right text-lg p-2 text-green-500">
+            You will get points if you checkout within 30 minutes
+          </h4>
+        ) : (
+          <h4 className="font-semibold float-right text-lg py-2 px-8 text-red-400">
+            You won't get any points today
+          </h4>
+        )}
+      </div>
+      <div className="relative mt-4">
         <img
           src={LandingImage}
           alt="landing"

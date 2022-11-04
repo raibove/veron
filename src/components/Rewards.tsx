@@ -11,6 +11,7 @@ import Tree7 from "../assets/tree7.svg";
 import Tree8 from "../assets/tree8.svg";
 import Tree9 from "../assets/tree9.svg";
 import Tree10 from "../assets/tree10.svg";
+import { notifyError, notifySuccess } from "./ToastifyMessages";
 
 const Rewards = () => {
   const [points, setPoints] = useState(0);
@@ -49,6 +50,31 @@ const Rewards = () => {
   const getImageByKey = (key: number) => {
     return images[key];
   };
+
+  const claimReward = async (currentPoints: number) => {
+    try {
+      const response = await axios.post(
+        "/rewards/claim",
+        { points: currentPoints },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("veronToken")}`,
+          },
+        }
+      );
+      let newPoints = points - currentPoints;
+      setPoints(newPoints);
+      notifySuccess("Reward claimed successfully");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        if (err.response.status === 403) {
+          localStorage.clear();
+          notifyError(err.response.data);
+        }
+      } else notifyError("Could not get Reward!!");
+    }
+  };
+
   return (
     <div className="bg-[#0AD8C7] h-screen overflow-y-auto">
       <Header />
@@ -64,7 +90,10 @@ const Rewards = () => {
               <img src={getImageByKey(index)} alt="tree" className="p-2" />
               <div className="bg-yellow-300 p-2 flex justify-around">
                 <p className="font-semibold">{getCost(index)}</p>
-                <button className="p-2 rounded-xl text-white  bg-yellow-600">
+                <button
+                  className="p-2 rounded-xl text-white  bg-yellow-600"
+                  onClick={() => claimReward(getCost(index))}
+                >
                   Plant
                 </button>
               </div>
