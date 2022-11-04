@@ -33,7 +33,10 @@ const Card = ({ product, title }: any) => {
       notifySuccess("Added to cart!!");
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        if (err.response.status === 403) notifyError(err.response.data);
+        if (err.response.status === 403) {
+          notifyError(err.response.data);
+          localStorage.clear();
+        }
       } else notifyError("Failed to add to cart!!");
     }
   };

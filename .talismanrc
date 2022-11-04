@@ -1,6 +1,6 @@
 fileignoreconfig:
-  - filename: src/components/Cart.tsx
-    checksum: 578e27674d6471e5d75341c5d7e121ddb8e769e392689d05c4931acab1477bfa
   - filename: src/components/Product.tsx
-    checksum: 3f99205c205ff45eb06afa63ac4701933219e643efc5f2ef86f014ff7284ff64
+    checksum: 9f9a703706c95241da316448e0e1f54ed316233d9c32f59a2087e1f58f0d0d78
+  - filename: src/components/Cart.tsx
+    checksum: 05312267d2a9b05320a8787ae092c220044d8ead38440bc865632031329198a0
 version: ""
