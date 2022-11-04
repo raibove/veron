@@ -1,11 +1,9 @@
-import User from "../assets/user.svg";
 import Cart from "../assets/cart.svg";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { notifyError, notifySuccess } from "./ToastifyMessages";
 
 interface AuthResponse {
   token: string;
@@ -19,21 +17,7 @@ interface Users {
   avatar: string;
 }
 
-const notifyError = () => {
-  toast.error("Login to proceed!", {
-    position: "top-right",
-    autoClose: 2000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  });
-};
-
 const Header = () => {
-  const [user, setUser] = useState<Users | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") !== undefined &&
       localStorage.getItem("isLoggedIn") === "true"
@@ -44,18 +28,19 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (googleData: any) => {
-    console.log(googleData);
     try {
       const result: AxiosResponse<AuthResponse> = await axios.post("/auth/", {
         token: googleData?.credential,
       });
 
-      setUser(result.data.user);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("veronToken", result.data.token);
+      localStorage.setItem("veronMail", result.data.user.email);
       setIsLoggedIn("true");
+      notifySuccess("Logged in successfully!!");
     } catch (e) {
       console.log(e);
+      notifyError("Failed to log in!!");
     }
   };
 
@@ -68,9 +53,6 @@ const Header = () => {
         Veron
       </h1>
       <div className="mr-4 flex gap-x-4 md:mr-16 md:gap-x-10">
-        {/* <div>
-          <img src={User} alt="user" className="cursor-pointer" />
-        </div> */}
         {isLoggedIn === "false" ? (
           <GoogleOAuthProvider
             clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
@@ -100,7 +82,7 @@ const Header = () => {
           onClick={() => {
             localStorage.getItem("isLoggedIn") === "true"
               ? navigate("/cart")
-              : notifyError();
+              : notifyError("Login to proceed!");
           }}
         />
       </div>

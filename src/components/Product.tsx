@@ -7,10 +7,9 @@ const Product = ({ title, data }: any) => {
       <div className="flex flex-nowrap w-screen gap-x-8 overflow-x-auto p-4">
         {data.map((product: any, index: number) => (
           <div key={index}>
-            <Card product={product} />
+            <Card product={product} category={title} />
           </div>
         ))}
-        {/* <Card /> */}
       </div>
     </div>
   );

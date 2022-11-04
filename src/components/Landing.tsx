@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import Header from "./Header";
+import "react-toastify/dist/ReactToastify.css";
 
 const Landing = () => {
   const [electronics, setElectronics] = useState(null);
