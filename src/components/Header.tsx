@@ -35,7 +35,6 @@ const Header = () => {
 
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("veronToken", result.data.token);
-      localStorage.setItem("veronMail", result.data.user.email);
       setIsLoggedIn("true");
       notifySuccess("Logged in successfully!!");
     } catch (e) {

@@ -16,7 +16,6 @@ const Card = ({ product, title }: any) => {
       let response = await axios.post(
         "/cart",
         {
-          userMail: localStorage.getItem("veronMail"),
           category: title,
           name: getTitle(),
           productId: product.id,
