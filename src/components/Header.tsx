@@ -59,7 +59,7 @@ const Header = () => {
             <GoogleLogin
               onSuccess={handleLogin}
               onError={() => {
-                console.log("failed");
+                notifyError("Failed to log in");
               }}
             />
           </GoogleOAuthProvider>

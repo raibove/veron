@@ -13,7 +13,7 @@ const Card = ({ product, title }: any) => {
     try {
       if (localStorage.getItem("isLoggedIn") !== "true")
         return notifyError("Login to proceed!");
-      let response = await axios.post(
+      await axios.post(
         "/cart",
         {
           category: title,
@@ -29,11 +29,12 @@ const Card = ({ product, title }: any) => {
           },
         }
       );
-      console.log(response);
+
       notifySuccess("Added to cart!!");
-    } catch (e) {
-      console.log(e);
-      notifyError("Failed to add to cart!!");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        if (err.response.status === 403) notifyError(err.response.data);
+      } else notifyError("Failed to add to cart!!");
     }
   };
   return (
